@@ -53,7 +53,7 @@
             template: ` 
                 <div class="container-fluid m-2" v-if="!isLoading && loadedComplete">
                         <div class="row " >
-                            <div class="col-lg-4 col-md-6 col-12" v-for="post in posts">
+                            <div class="col-xl-4 col-lg-6 col-md-12" v-for="post in posts">
                                     <div class="post-card my-3 mx-2 p-3 d-flex flex-column" >
                                         <span class="fnt-16 user-header my-2"><i class="fa-regular fa-user"></i>{{post.user.name}}</span>
                                         <div class="m-2 post-content" id="scrollbarContainer">
@@ -73,19 +73,19 @@
                 <!-- Loader -->
                 <div  v-if="isLoading" class="container-fluid m-2">
                     <div class="row">
-                        <div class="col-lg-4 col-md-6 col-12 card-skeleton is-loading">
+                        <div class="col-xl-4 col-lg-6 col-md-12 card-skeleton is-loading">
                                 <div class="skeleton-body my-3 mx-2"></div>
                         </div>
-                        <div class="col-lg-4 col-md-6 col-12 card-skeleton is-loading">
+                        <div class="col-xl-4 col-lg-6 col-md-12 card-skeleton is-loading">
                                 <div class="skeleton-body my-3 mx-2"></div>
                         </div>
-                        <div class="col-lg-4 col-md-6 col-12 card-skeleton is-loading">
+                        <div class="col-xl-4 col-lg-6 col-md-12 card-skeleton is-loading">
                                 <div class="skeleton-body my-3 mx-2"></div>
                         </div>
-                        <div class="col-lg-4 col-md-6 col-12 card-skeleton is-loading">
+                        <div class="col-xl-4 col-lg-6 col-md-12 card-skeleton is-loading">
                                 <div class="skeleton-body my-3 mx-2"></div>
                         </div>
-                        <div class="col-lg-4 col-md-6 col-12 card-skeleton is-loading">
+                        <div class="col-xl-4 col-lg-6 col-md-12 card-skeleton is-loading">
                                 <div class="skeleton-body my-3 mx-2"></div>
                         </div>
                     </div>
@@ -201,7 +201,7 @@
                 <div class="container-fluid m-2" v-if="!isLoading && loadedComplete">
                         
                         <div class="row justify-content-center" >
-                            <div class="col-md-8 ">
+                            <div class="col-lg-8 ">
                                     <div class="post-card my-3 mx-2 p-3 d-flex flex-column" >
                                         <span class="fnt-16 user-header my-2"><i class="fa-regular fa-user"></i>{{post.user.name}}</span>
                                         <div class="m-2 big-post-content" id="scrollbarContainer">
