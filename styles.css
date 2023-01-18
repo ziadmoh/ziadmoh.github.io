@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
 :root {
-    --main: #2AB574;
-    --main-hover: #1c995f;
-    --main-less-opacity: #2ab57477;
+    --main: #5242EA;
+    --main-hover: #3c2eb6;
+    --main-less-opacity: #5342ea6b;
 
   }
 * {
