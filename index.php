@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Empoeromics task</title>
+
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
+    <link rel='stylesheet' type='text/css' media='screen' href='styles.css'>
+</head>
+<body>
+    <!-- Content -->
+    <div id="app">
+        <nav class="">
+            <div class="container-fluid">
+                <div class="d-flex flex-row align-items-center justify-content-between">
+                    <div class="d-flex flex-row align-items-center">
+                        <img src="assets/images/ziad-yahya.jpg" class="img-fluid img-w-40">
+                        <h5 class=" mb-0 mx-2">Ziad yahya</h5>
+                    </div>
+                    <a href="https://empoweromics.com/" class="link-light" target="_blank">Empoweromics</a>
+                    
+                </div>
+            </div>
+        </nav>
+        <router-view></router-view>
+
+         <!-- Loader -->
+         <div  v-if="isLoading">
+            <div class="navigation-spinner-container">
+                <span class="loader"></span>
+
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- JS Sctipts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/vue@3"></script>
+
+    <script src="https://unpkg.com/vue-router@4"></script>
+
+   <script>
+    // Posts component
+        const PostsComponent = { 
+            template: ` 
+                <div class="container-fluid m-2" v-if="!isLoading && loadedComplete">
+                        <div class="row " >
+                            <div class="col-lg-4 col-md-6 col-12" v-for="post in posts">
+                                    <div class="post-card my-3 mx-2 p-3 d-flex flex-column" >
+                                        <span class="fnt-16 user-header my-2"><i class="fa-regular fa-user"></i>{{post.user.name}}</span>
+                                        <div class="m-2 post-content" id="scrollbarContainer">
+                                            <span class="fnt-16 my-2">{{post.title}}</span>
+                                            <p class="post-body">{{post.body}}</p>
+                                        </div>
+                                        <router-link :to="'/posts/' + post.id + '/comments' ">
+                                            <div class="post-footer">
+                                                <i class="fa-regular fa-comment"></i> Comments
+                                            </div>
+                                       </router-link>
+                                    </div>
+                                    
+                            </div>
+                        </div>
+                </div>
+                <!-- Loader -->
+                <div  v-if="isLoading" class="container-fluid m-2">
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 col-12 card-skeleton is-loading">
+                                <div class="skeleton-body my-3 mx-2"></div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-12 card-skeleton is-loading">
+                                <div class="skeleton-body my-3 mx-2"></div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-12 card-skeleton is-loading">
+                                <div class="skeleton-body my-3 mx-2"></div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-12 card-skeleton is-loading">
+                                <div class="skeleton-body my-3 mx-2"></div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-12 card-skeleton is-loading">
+                                <div class="skeleton-body my-3 mx-2"></div>
+                        </div>
+                    </div>
+                </div>
+                <div  v-if="!isLoading && !loadedComplete" class="d-flex flex-row justify-content-center align-items-center">
+                    <h3 class="my-4">Oops! server is down please try again</h3>
+                </div>
+            `,
+            data() {
+                return {
+                    posts: [
+                        {
+                        userId: 0,
+                        id: 0,
+                        title: "",
+                        body: "",
+                        user: {
+                            id: 1,
+                            name: "",
+                            username: "",
+                            email: "",
+                            address: {
+                                street: "",
+                                suite: "",
+                                city: "",
+                                zipcode: "",
+                                geo: {
+                                    lat: "",
+                                    lng: ""
+                                }
+                            },
+                            phone: "",
+                            website: "",
+                            company: {
+                                name: "",
+                                catchPhrase: "",
+                                bs: ""
+                            }
+                        }
+                    }
+                    ],
+                    users: [],
+                    isLoading:true,
+                    loadedComplete:false,
+                }
+            },
+            mounted() {
+                this.getPostsList()
+            
+            },
+            
+
+            methods: {
+                getPostsList() {
+                    this.isLoading = true
+                    axios.get('https://jsonplaceholder.typicode.com/posts').then(res => {
+                        
+                        if (res.status == 200) {
+                            toastr.success('Successfully fetched!')
+                        this.posts = res.data
+                        this.getUsersList()
+                        }else{
+                            toastr.error(res.statusText, 'An error has occured on the server')
+                        }
+
+                    }, err => {
+                        this.isLoading = false
+                        toastr.error('Failed to Fetch data!', 'An error has occured on the server')
+                    })
+
+                },
+                getUsersList() {
+                    axios.get('https://jsonplaceholder.typicode.com/users').then(res => {
+                        
+                        if (res.status == 200) {
+                        this.users = res.data
+                        this.posts.map(post =>{
+                            return post['user'] = this.users.find(user =>{
+                                return user.id == post.userId
+                            })
+                        
+                        })
+                        this.isLoading = false
+                        this.loadedComplete = true
+                        }else{
+                            toastr.error(res.statusText, 'An error has occured on the server')
+                        }
+
+                    }, err => {
+                        toastr.error('Failed to Fetch data!', 'An error has occured on the server')
+                    })
+
+                },
+            
+            
+            }
+
+        }
+        
+    // Comments component    
+        const CommentsComponent = { 
+            template: ` 
+            <div class="d-flex m-2">
+                            <div class=" text-decoration-none">
+                                <router-link to="/" class="text-decoration-none">
+                                    <div class="bg-secondary back-btn">
+                                        <i class="fa-solid fa-chevron-left"></i> 
+                                        <span class="text-decoration-none"></span>Back
+                                    </div>
+                                </router-link>
+                            </div>
+                        </div>
+                <div class="container-fluid m-2" v-if="!isLoading && loadedComplete">
+                        
+                        <div class="row justify-content-center" >
+                            <div class="col-md-8 ">
+                                    <div class="post-card my-3 mx-2 p-3 d-flex flex-column" >
+                                        <span class="fnt-16 user-header my-2"><i class="fa-regular fa-user"></i>{{post.user.name}}</span>
+                                        <div class="m-2 big-post-content" id="scrollbarContainer">
+                                            <span class="fnt-16 my-2">{{post.title}}</span>
+                                            <p class="post-body">{{post.body}}</p>
+                                        </div>
+                                        
+                                            <div class="comments-header">
+                                                <i class="fa-regular fa-comment"></i> Comments
+                                            </div>
+                                        <div class="comments-container my-3" v-if="!isCommentsLoading &&isCommentsLoaded">
+
+                                            <div v-for="comment in comments">
+                                                    <div class="comments-card my-3 mx-2 p-3 d-flex flex-column" >
+                                                        <span class="fnt-16 user-header my-1"><i class="fa-regular fa-user"></i>{{comment.name}}</span>
+                                                        <small class="fnt-10 text-secondary"><i class="fa-regular fa-envelope email-icon"></i>{{comment.email}}</small>
+                                                        <div class="m-2" >
+                                                            <p class="post-body">{{comment.body}}</p>
+                                                        </div>
+                                                    </div>
+                                                    
+                                            </div>
+                                            
+                                        </div>
+                                        <div class="d-flex flex-row justify-content-center my-4" v-if="isCommentsLoading">
+                                                <span class="comments-loader"></span>
+                                            </div>
+                                    </div>
+                                    
+                            </div>
+                        </div>
+                </div>
+                <!-- Loader -->
+                <div  v-if="isLoading" class="container-fluid m-2">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8 card-skeleton is-loading">
+                                <div class="skeleton-body my-3 mx-2"></div>
+                        </div>
+                    </div>
+                </div>
+                <div  v-if="!isLoading && !loadedComplete" class="d-flex flex-row justify-content-center align-items-center">
+                    <h3 class="my-4">Oops! server is down please try again</h3>
+                </div>
+            `,
+            data() {
+                return {
+                    post:  {
+                        userId: 0,
+                        id: 0,
+                        title: "",
+                        body: "",
+                        user: {
+                            id: 1,
+                            name: "",
+                            username: "",
+                            email: "",
+                            address: {
+                                street: "",
+                                suite: "",
+                                city: "",
+                                zipcode: "",
+                                geo: {
+                                    lat: "",
+                                    lng: ""
+                                }
+                            },
+                            phone: "",
+                            website: "",
+                            company: {
+                                name: "",
+                                catchPhrase: "",
+                                bs: ""
+                            }
+                        }
+                    },
+                    comments:[{
+                        postId: 0,
+                        id: 0,
+                        name: "",
+                        email: "",
+                        body: ""
+                        },
+                    ],
+                    isLoading:true,
+                    isCommentsLoading:true,
+                    isCommentsLoaded:false,
+                    loadedComplete:false,
+                }
+            },
+            mounted() {
+                this.getPost()
+                this.getCommentsList();
+            },
+            
+
+            methods: {
+                getCommentsList() {
+                    this.isCommentsLoading = true
+                    axios.get(`https://jsonplaceholder.typicode.com/posts/${this.$route.params.id}/comments`).then(res => {
+                        this.isCommentsLoading  = false
+                        if (res.status == 200) {
+                            this.isCommentsLoaded = true
+                            
+                            toastr.success('Successfully fetched!')
+                            this.comments = res.data
+                        }else{
+                            toastr.error(res.statusText, 'An error has occured on the server')
+                        }
+
+                    }, err => {
+                        this.isCommentsLoading = false
+                        toastr.error('Failed to Fetch data!', 'An error has occured on the server')
+                    })
+
+                },
+                getPost() {
+                    this.isLoading = true
+                    axios.get('https://jsonplaceholder.typicode.com/posts/'+this.$route.params.id).then(res => {
+                        
+                        if (res.status == 200) {
+                            this.post = res.data
+                            this.getPostOwner()
+                        }else{
+                            toastr.error(res.statusText, 'An error has occured on the server')
+                        }
+
+                    }, err => {
+                        this.isLoading = false
+                        toastr.error('Failed to Fetch data!', 'An error has occured on the server')
+                    })
+
+                },
+                getPostOwner() {
+                    axios.get('https://jsonplaceholder.typicode.com/users').then(res => {
+                        
+                        if (res.status == 200) {
+                        let users = res.data
+                          this.post['user'] =  users.find(user =>{
+                                return user.id == this.post.userId
+                            })
+
+                        this.isLoading = false
+                        this.loadedComplete = true
+                        }else{
+                            this.isLoading = false
+                            toastr.error(res.statusText, 'An error has occured on the server')
+                        }
+
+                    }, err => {
+                        toastr.error('Failed to Fetch data!', 'An error has occured on the server')
+                    })
+
+                },
+            
+            
+            }
+
+        }
+        
+    // App
+
+        const routes = [
+        { path: '/', component: PostsComponent },
+        { path: '/posts/:id/comments', component: CommentsComponent },
+        ]
+
+        const router = VueRouter.createRouter({
+            history: VueRouter.createWebHashHistory(),
+            routes, 
+        })
+        
+        const app = Vue.createApp(
+            {
+            el: '#app',
+            data() {
+                return {
+                    isLoading:true,
+                }
+            },
+            mounted() {
+                this.isLoading = false
+            
+            },
+        }
+        )
+        app.use(router)
+        app.mount('#app')
+
+       
+  
+
+</script>
+</body>
+</html>
